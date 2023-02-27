@@ -1,0 +1,67 @@
+﻿@page "/login"
+@using ECommerce_Blazor.Client.Services.Auths;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Microsoft.AspNetCore.WebUtilities;
+
+@inject IAuthService _authService
+@inject ILocalStorageService _localStorage
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject ICartService _cartService
+
+<PageTitle>Login</PageTitle>
+
+<EditForm Model="user" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="email">Email</label>
+        <InputText id="email" @bind-Value="user.Email" class="form-control"></InputText>
+    </div>
+    <div class="mb-3">
+        <label for="password">Password</label>
+        <InputText id="password" @bind-Value="user.Password" class="form-control" type="password"></InputText>
+        <ValidationMessage For="(()=>user.Password)"></ValidationMessage>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+<div class="text-danger">
+    <span>@errorMessage</span>
+</div>
+
+
+
+@code {
+    private string errorMessage = string.Empty;
+    private UserLogin user = new UserLogin();
+    private string returnUrL = string.Empty;
+    protected override void OnInitialized()
+    {
+        var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
+        {
+            returnUrL = url;
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        var result = await _authService.Login(user);
+        if (result.Success)
+        {
+            errorMessage = result.Message;
+            await _localStorage.SetItemAsync("authToken", result.Data);
+            await _cartService.CartItemQuantity();
+            await _authenticationStateProvider.GetAuthenticationStateAsync();
+            await _cartService.StoreCartItems(true);
+            if (result.Data != null)
+            {
+                _navigationManager.NavigateTo(returnUrL);
+            }
+        }
+        else
+        {
+            errorMessage = result.Message;
+            //result.Success = false;
+        }
+    }
+}

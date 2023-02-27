@@ -1,0 +1,35 @@
+﻿
+@inject ICartService _cartService
+@inject ISyncLocalStorageService _localStorageService
+@inject NavigationManager _navigationManager;
+@implements IDisposable
+
+<a href="cart" class="btn btn-info">
+    <i class="oi oi-cart"></i>
+    <span class="badge">@GetCartItemsCount()</span>
+</a>
+
+@code {
+
+    //private void Load()
+    //{
+    //    _navigationManager.NavigateTo("cart");
+    //}
+
+    private int GetCartItemsCount()
+    {
+        var cart = _localStorageService.GetItem<int>("cartItemsCount");
+        return cart;
+    }
+
+    protected override void OnInitialized()
+    {
+        _cartService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _cartService.OnChange -= StateHasChanged;
+    }
+
+}

@@ -1,0 +1,54 @@
+﻿@page "/register"
+@using ECommerce_Blazor.Client.Services.Auths;
+@inject IAuthService _service
+@inject NavigationManager _navigationManager
+<PageTitle>Register</PageTitle>
+<h3>Register</h3>
+
+<EditForm Model="user" OnValidSubmit="HandleRegistration">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="email">Email</label>
+        <InputText id="email" @bind-Value="user.Email" class="form-control"></InputText>
+    </div>
+    <div class="mb-3">
+        <label for="password">Password</label>
+        <InputText id="password" @bind-Value="user.Password" class="form-control" type="password"></InputText>
+        <ValidationMessage For="(()=>user.Password)"></ValidationMessage>
+
+    </div>
+    <div class="mb-3">
+        <label for="confirmPassword">Confirm Password</label>
+        <InputText id="password" @bind-Value="user.ConfirmPassword" class="form-control" type="password"></InputText>
+        <ValidationMessage For="(()=>user.ConfirmPassword)"></ValidationMessage>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+    <div class="@messageCssClass">
+        <span>@Message</span>
+    </div>
+</EditForm>
+
+
+@code {
+    UserRegister user = new UserRegister();
+
+
+    string Message = string.Empty;
+    string messageCssClass = string.Empty;
+
+    async Task HandleRegistration()
+    {
+        var result = await _service.Register(user);
+        Message = result.Message;
+        if (result.Success)
+        {
+            messageCssClass = "text-danger";
+            _navigationManager.NavigateTo("login");
+        }
+        else
+        {
+            messageCssClass = "text-success";
+        }
+    }
+}

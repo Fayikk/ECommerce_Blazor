@@ -1,0 +1,72 @@
+﻿@inject IProductService _productService
+@implements IDisposable
+
+@if (_productService.Products == null || _productService.Products.Count == 0)
+{
+    <span>
+        @_productService.Message
+    </span>
+}
+else
+{
+    <ul class="list-unstyled">
+        @foreach (var item in _productService.Products)
+        {
+            <li class="oi-media-pause my-3">
+                <div class="oi-media-pause img-wrapper mr-2">
+                    <a href="/product/@item.Id">
+                        <img class="oi-media-pause-img" src="@item.ImageUrl" alt="@item.Title">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <a href="/product/@item.Id">
+                        <h4 class="mb-0">@item.Title</h4>
+                    </a>
+                    <p>@item.Description</p>
+                    <h5 class="price">
+                        @GetPriceText(item);
+                    </h5>
+                </div>
+            </li>
+        }
+    </ul>
+
+    for (var i = 1; i <= _productService.PageCount; i++)
+    {
+        <a class="btn
+                         @(i == _productService.currentPage ? "btn-info" : "btn-outline-info")
+                         page-selection"
+   href="/search/@_productService.LastSearchText/@i">@i</a>
+    }
+
+}
+
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        _productService.ProductsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _productService.ProductsChanged -= StateHasChanged;
+
+    }
+    private string GetPriceText(Product product)
+    {
+        //Display the  productPrice in the ProductList
+        var variants = product.Variants;
+        if (variants.Count == 0)
+        {
+            return string.Empty;
+        }
+        else if (variants.Count == 1)
+        {
+            return $"${variants[0].Price}";
+        }
+        decimal minPrice = variants.Min(v => v.Price);
+        return $"Starting at ${minPrice}";
+    }
+}
