@@ -1,17 +1,20 @@
 ﻿@page "/cart"
 @inject ICartService _cartService
 @inject IOrderService _orderService
-
+@inject NavigationManager _navigationManager
 
 <PageTitle>Shopping Cart</PageTitle>
 @if (cartProducts == null || cartProducts.Count == 0)
 {
     <span>@message</span>
 }
+else if (orderPlaced)
+{
+    <span>Thank you for your order! You can check your orders <a href="orders">here</a>.</span>
+}
 else
 {
-    if (orderPlaced == false)
-    {
+    <div>
         @foreach (var product in cartProducts)
         {
             <div class="container">
@@ -22,9 +25,9 @@ else
                     <h5><a href="/product/@product.ProductId">@product.Title</a></h5>
                     <span>@product.ProductType</span><br />
                     <input type="number" value="@product.Quantity"
-               @onchange="@((ChangeEventArgs e) => UpdateQuantity(e, product))"
-               class="form-control input-quantity"
-               min="1" />
+                   @onchange="@((ChangeEventArgs e) => UpdateQuantity(e, product))"
+                   class="form-control input-quantity"
+                   min="1" />
                     <button class="btn-delete" @onclick="@(() =>
                         RemoveProductFromCart(product.ProductId, product.ProductTypeId))">
                         Delete
@@ -36,14 +39,10 @@ else
         <div class="cart-product-price">
             Total (@cartProducts.Count): $@cartProducts.Sum(product => @product.Price * product.Quantity)
         </div>
-        <button @onclick="PlaceOrder" class="btn alert-success float-right mt-1">Place Order</button>
-    }
-    else
-    {
-        <span>Thank you for order! you can check your orders <a href="orders">here</a></span>
-    }
-
+    </div>
+    <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Checkout</button>
 }
+
 
 @code {
     List<CartProductResponse> cartProducts = null;
@@ -81,9 +80,8 @@ else
 
     private async Task PlaceOrder()
     {
-        await _orderService.PlaceOrder();
-        await _cartService.CartItemQuantity();
-        orderPlaced = true;
+        string Url = await _orderService.PlaceOrder();
+        _navigationManager.NavigateTo(Url);
     }
 
 }

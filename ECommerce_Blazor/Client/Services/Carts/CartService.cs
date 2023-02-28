@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using ECommerce_Blazor.Client.Services.Auths;
 using ECommerce_Blazor.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Json;
@@ -8,13 +9,13 @@ namespace ECommerce_Blazor.Client.Services.Carts
     public class CartService:ICartService
     {
         private readonly ILocalStorageService _localStorage;
+        private readonly IAuthService _authService;
         private readonly HttpClient _http;
-        private readonly AuthenticationStateProvider _authenticationStateProvider;
-        public CartService(ILocalStorageService localStorage, HttpClient http, AuthenticationStateProvider authenticationStateProvider)
+        public CartService(ILocalStorageService localStorage, HttpClient http,IAuthService authService)
         {
+            _authService= authService;
             _http = http;
             _localStorage = localStorage;
-            _authenticationStateProvider = authenticationStateProvider;
         }
 
         //public string Message { get; set; } = "Product not fount into the basket";
@@ -23,7 +24,7 @@ namespace ECommerce_Blazor.Client.Services.Carts
 
         public async Task AddToCart(CartItem cartItem)
         {
-            if (await IsUserAuthenticated())
+            if (await _authService.IsUserAuthenticated())
             {
                 await _http.PostAsJsonAsync("api/cart/add", cartItem);
             }
@@ -55,7 +56,7 @@ namespace ECommerce_Blazor.Client.Services.Carts
 
         public async Task CartItemQuantity()
         {
-            if (await IsUserAuthenticated())
+            if (await _authService.IsUserAuthenticated())
             {
                 var result = await _http.GetFromJsonAsync<ServiceResponse<int>>("api/cart/cart-count");
                 var count = result.Data;
@@ -74,7 +75,7 @@ namespace ECommerce_Blazor.Client.Services.Carts
 
         public async Task<List<CartProductResponse>> GetCartProduct()
         {
-            if (await IsUserAuthenticated())
+            if (await _authService.IsUserAuthenticated())
             {
                 var response = await _http.GetFromJsonAsync<ServiceResponse<List<CartProductResponse>>>("api/cart");
                 return response.Data;
@@ -99,7 +100,7 @@ namespace ECommerce_Blazor.Client.Services.Carts
         public async Task RemoveProductFromCart(int productId, int productTypeId)
         {
 
-            if (await IsUserAuthenticated())
+            if (await _authService.IsUserAuthenticated())
             {
                 await _http.DeleteAsync($"api/cart/{productId}/{productTypeId}");
             }
@@ -138,7 +139,7 @@ namespace ECommerce_Blazor.Client.Services.Carts
 
         public async Task UpdateQuantity(CartProductResponse product)
         {
-            if (await IsUserAuthenticated())
+            if (await _authService.IsUserAuthenticated())
             {
                 var request = new CartItem
                 {
@@ -169,9 +170,7 @@ namespace ECommerce_Blazor.Client.Services.Carts
 
         }
 
-        private async Task<bool> IsUserAuthenticated()
-        {
-            return (await _authenticationStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
-        }
+       
+
     }
 }

@@ -1,14 +1,17 @@
 ﻿using ECommerce_Blazor.Shared;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Json;
 
 namespace ECommerce_Blazor.Client.Services.Auths
 {
-    public class AuthService:IAuthService
+    public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
-        public AuthService(HttpClient httpClient)
+        private readonly AuthenticationStateProvider _stateProvider;
+        public AuthService(HttpClient httpClient,AuthenticationStateProvider stateProvider)
         {
             _httpClient = httpClient;
+            _stateProvider = stateProvider;
         }
 
         public async Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request)
@@ -16,6 +19,12 @@ namespace ECommerce_Blazor.Client.Services.Auths
             var result = await _httpClient.PostAsJsonAsync("api/auth/change-password", request.Password);
 
             return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+        }
+
+        public async Task<bool> IsUserAuthenticated()
+        {
+
+            return (await _stateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
         }
 
         public async Task<ServiceResponse<string>> Login(UserLogin user)

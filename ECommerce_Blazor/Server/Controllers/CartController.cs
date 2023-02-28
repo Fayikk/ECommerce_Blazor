@@ -58,9 +58,9 @@ namespace ECommerce_Blazor.Server.Controllers
         }
 
         [HttpDelete("{productId}/{productTypeId}")]
-        public async Task<ActionResult<ServiceResponse<bool>>> RemoveItemFromCart(int productId, int productTyepId)
+        public async Task<ActionResult<ServiceResponse<bool>>> RemoveItemFromCart(int productId, int productTypeId)
         {
-            var result = await _cartService.RemoveItemFromCart(productId, productTyepId);
+            var result = await _cartService.RemoveItemFromCart(productId, productTypeId);
             return Ok(result);
         }
     }

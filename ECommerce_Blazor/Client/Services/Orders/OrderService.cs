@@ -18,6 +18,12 @@ namespace ECommerce_Blazor.Client.Services.Orders
             _navigationManager = navigationManager;
         }
 
+        public async Task<OrderDetailsResponse> GetOrderDetails(int orderId)
+        {
+            var result = await _client.GetFromJsonAsync<ServiceResponse<OrderDetailsResponse>>($"api/order/{orderId}");
+            return result.Data;
+        }
+
         public async Task<List<OrderViewResponse>> GetOrders()
         {
 
@@ -27,16 +33,19 @@ namespace ECommerce_Blazor.Client.Services.Orders
 
         }
 
-        public async Task PlaceOrder()
+        public async Task<string> PlaceOrder()
         {
             if (await IsUserAuthenticated())
             {
-                await _client.PostAsync("api/order", null);
+               var result =  await _client.PostAsync("api/payment/checkout", null);
+                var url = await result.Content.ReadAsStringAsync();
+                return url;
             }
             else
             {
-                _navigationManager.NavigateTo("login");
+                return "login";
             }
+            
         }
 
 

@@ -7,5 +7,6 @@ namespace ECommerce_Blazor.Client.Services.Auths
         Task<ServiceResponse<int>> Register(UserRegister request);
         Task<ServiceResponse<string>> Login(UserLogin user);
         Task<ServiceResponse<bool>> ChangePassword(UserChangePassword changePassword);
+        Task<bool> IsUserAuthenticated();
     }
 }
