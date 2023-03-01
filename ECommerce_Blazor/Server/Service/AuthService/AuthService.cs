@@ -92,8 +92,8 @@ namespace ECommerce_Blazor.Server.Service.AuthService
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Email),
-                //new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Name, user.Email),//For Email Verification
+                new Claim(ClaimTypes.Role, user.Role) //For Role Verification Middleware
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8

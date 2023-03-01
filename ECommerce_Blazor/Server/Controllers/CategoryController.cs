@@ -1,5 +1,6 @@
 ﻿using ECommerce_Blazor.Server.Service.CategoryService;
 using ECommerce_Blazor.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,33 @@ namespace ECommerce_Blazor.Server.Controllers
         public async Task<ActionResult<ServiceResponse<List<Category>>>> GetCategories()
         {
             var result = await _categoryService.GetCategories();
+            return Ok(result);
+        }
+
+        [HttpGet("admin"),Authorize(Roles ="Admin")]
+        public async Task<ActionResult<ServiceResponse<List<Category>>>> GetAdminCategories()
+        {
+            var result = await _categoryService.GetAdminCategories();
+            return Ok(result);
+        }
+
+        [HttpGet("admin/{id}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<List<Category>>>> DeleteCategory([FromRoute]int id)
+        {
+            var result = await _categoryService.DeleteCategory(id);
+            return Ok(result);
+        }
+        [HttpPost("admin"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<List<Category>>>> AddCategory(Category category)
+        {
+            var result = await _categoryService.AddCategory(category);
+            return Ok(result);
+        }
+
+        [HttpPut("admin"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<List<Category>>>> UpdateCategories(Category category)
+        {
+            var result = await _categoryService.UpdateCategory(category);
             return Ok(result);
         }
     }
