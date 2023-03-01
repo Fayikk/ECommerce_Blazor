@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using ECommerce_Blazor.Client;
+using ECommerce_Blazor.Client.Services.Addresses;
 using ECommerce_Blazor.Client.Services.Auths;
 using ECommerce_Blazor.Client.Services.Carts;
 using ECommerce_Blazor.Client.Services.Categories;
@@ -19,6 +20,7 @@ builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<ICartService,CartService>(); 
 builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAddressService,AddressService>();   
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();

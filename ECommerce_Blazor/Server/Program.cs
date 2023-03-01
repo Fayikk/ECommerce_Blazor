@@ -1,4 +1,5 @@
 using ECommerce_Blazor.Server.Data;
+using ECommerce_Blazor.Server.Service.AddressService;
 using ECommerce_Blazor.Server.Service.AuthService;
 using ECommerce_Blazor.Server.Service.CartService;
 using ECommerce_Blazor.Server.Service.CategoryService;
@@ -20,8 +21,9 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<ICartService,CartService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService,PaymentService>();
+builder.Services.AddScoped<IOrderService,OrderService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
