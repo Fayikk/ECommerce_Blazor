@@ -6,6 +6,7 @@ using ECommerce_Blazor.Server.Service.CategoryService;
 using ECommerce_Blazor.Server.Service.OrderService;
 using ECommerce_Blazor.Server.Service.PaymentService;
 using ECommerce_Blazor.Server.Service.ProductService;
+using ECommerce_Blazor.Server.Service.ProductTypeService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ builder.Services.AddScoped<ICartService,CartService>();
 builder.Services.AddScoped<IPaymentService,PaymentService>();
 builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
