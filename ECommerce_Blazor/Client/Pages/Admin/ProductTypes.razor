@@ -1,7 +1,7 @@
 ﻿@page "/admin/product-types"
 @inject IProductTypeService _productTypeService
 @implements IDisposable
-@attribute [Authorize(Roles ="Admin")]
+@attribute [Authorize(Roles = "Admin")]
 <h3>
     <strong>Product Types</strong>
 </h3>
@@ -10,8 +10,9 @@
     @if (productType.Editing)
     {
         <EditForm Model="editingProductType" OnSubmit="UpdateProductType">
-            <div class="row">
-                <InputText @bind-Value="editingProductType.Name" class="form-control"  />
+            <div class="row" style="margin-bottom:15px">
+
+                <InputText @bind-Value="editingProductType.Name" class="form-control" />
             </div>
             <div class="col">
                 <button type="submit" class="btn btn-primary">
@@ -31,6 +32,10 @@
                     <i class="oi oi-pencil"></i>
                 </button>
             </div>
+
+            <div class="col">
+                <button class="btn btn-warning" @onclick="(()=>DeleteProductTypes(productType.Id))">Delete</button>
+            </div>
         </div>
     }
 }
@@ -42,6 +47,8 @@
 
 @code {
     ProductType editingProductType = null;
+    [Parameter]
+    public int productTypeId { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await _productTypeService.GetProductTypes();
@@ -62,6 +69,13 @@
         editingProductType = _productTypeService.CreateNewProductType();
     }
 
+    public async Task DeleteProductTypes(int Id)
+    {
+        await _productTypeService.DeleteProductType(Id);
+        await _productTypeService.GetProductTypes();
+
+    }
+
     public async Task UpdateProductType()
     {
         if (editingProductType.IsNew)
@@ -72,6 +86,7 @@
         {
             await _productTypeService.UpdateProductType(editingProductType);
         }
+        await _productTypeService.GetProductTypes();
         editingProductType = new ProductType();
     }
 

@@ -31,7 +31,7 @@ namespace ECommerce_Blazor.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("admin/{id}"), Authorize(Roles = "Admin")]
+        [HttpDelete("admin/{id}"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ServiceResponse<List<Category>>>> DeleteCategory([FromRoute]int id)
         {
             var result = await _categoryService.DeleteCategory(id);

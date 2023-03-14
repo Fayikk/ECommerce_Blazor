@@ -23,7 +23,7 @@ namespace ECommerce_Blazor.Server.Controllers
             var result = await _productTypeService.GetProductTypes();
             return Ok(result);
         }
-        [HttpPut]
+        [HttpPost("create")]
         public async Task<ActionResult<ServiceResponse<ProductType>>> CreateProductType(ProductType productType)
         {
             var result = await _productTypeService.CreateProductType(productType);
@@ -36,8 +36,12 @@ namespace ECommerce_Blazor.Server.Controllers
             var result = await _productTypeService.UpdateProductType(productType);
             return Ok(result);
         }
+        [HttpDelete("{Id}")]
+        public async Task<ActionResult<ServiceResponse<ProductType>>> DeleteProductType([FromRoute]int Id)
+        {
+            var result = await _productTypeService.DeleteProductType(Id);
+            return Ok(result);  
+        }
 
     }
 }
-//Task<ServiceResponse<List<ProductType>>> CreateProductType(ProductType productType);
-//Task<ServiceResponse<List<ProductType>>> UpdateProductType(ProductType productType);

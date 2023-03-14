@@ -1,7 +1,7 @@
 ﻿@page "/admin/categories"
 @inject ICategoryService _categoryService
 @implements IDisposable
-@attribute [Authorize(Roles ="Admin")]
+@attribute [Authorize(Roles = "Admin")]
 
 
 <h3>Categories</h3>
@@ -55,7 +55,7 @@
                 <button class="btn btn-primary" @onclick="(() => EditCategory(category))">
                     <i class="oi oi-pencil"></i>
                 </button>
-                <button class="btn btn-primary" @onclick="(() => DeleteCategory(category.Id))">
+                <button class="btn btn-primary" @onclick="(()=>DeleteCategory(category.Id))">
                     <i class="oi oi-trash"></i>
                 </button>
             </div>
@@ -115,5 +115,6 @@
     private async Task DeleteCategory(int id)
     {
         await _categoryService.DeleteCategory(id);
+        await _categoryService.GetAdminCategories();
     }
 }

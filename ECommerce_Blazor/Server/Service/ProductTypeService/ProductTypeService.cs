@@ -19,6 +19,22 @@ namespace ECommerce_Blazor.Server.Service.ProductTypeService
             return await GetProductTypes();
         }
 
+        public async Task<ServiceResponse<ProductType>> DeleteProductType(int productTypeId)
+        {
+            var result = await _context.ProductTypes.FirstOrDefaultAsync(x=>x.Id == productTypeId);
+            if (result != null)
+            {
+                _context.ProductTypes.Remove(result);
+                await _context.SaveChangesAsync();
+                return new ServiceResponse<ProductType>
+                {
+                    Success = true,
+
+                };
+            }
+            return new ServiceResponse<ProductType> { Success = false };
+        }
+
         public async Task<ServiceResponse<List<ProductType>>> GetProductTypes()
         {
             var result = await _context.ProductTypes.ToListAsync();

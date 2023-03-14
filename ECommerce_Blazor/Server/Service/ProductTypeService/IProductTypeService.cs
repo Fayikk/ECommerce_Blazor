@@ -7,5 +7,6 @@ namespace ECommerce_Blazor.Server.Service.ProductTypeService
         Task<ServiceResponse<List<ProductType>>> GetProductTypes();
         Task<ServiceResponse<List<ProductType>>> CreateProductType(ProductType productType);
         Task<ServiceResponse<List<ProductType>>> UpdateProductType(ProductType productType);
+        Task<ServiceResponse<ProductType>> DeleteProductType(int productTypeId);
     }
 }

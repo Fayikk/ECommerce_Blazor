@@ -17,9 +17,10 @@ namespace ECommerce_Blazor.Client.Services.ProductTypes
 
         public async Task AddProductType(ProductType productType)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/producttype", productType);
+            var response = await _httpClient.PostAsJsonAsync("api/producttype/create", productType);
             ProductTypes = (await response.Content.ReadFromJsonAsync<ServiceResponse<List<ProductType>>>()).Data;
             OnChange.Invoke();
+
         }
 
         public ProductType CreateNewProductType()
@@ -32,6 +33,12 @@ namespace ECommerce_Blazor.Client.Services.ProductTypes
             ProductTypes.Add(newProductType);
             OnChange.Invoke();
             return newProductType;  
+        }
+
+        public async Task DeleteProductType(int productTypeId)
+        {
+            var result = await _httpClient.DeleteAsync($"api/producttype/{productTypeId}");
+            OnChange.Invoke();
         }
 
         public async Task GetProductTypes()
